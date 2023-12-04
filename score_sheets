@@ -1,0 +1,33 @@
+from pikepdf import Pdf
+
+
+# the target PDF document to split
+def split_and_name(filename: str, entry_ids: list[int], pages_per: int = 3):
+    # load the PDF file
+    pdf = Pdf.open(filename)
+    # iterate over all PDF pages
+    new_pdf = Pdf.new()
+    entry_count = 0
+    for n, page in enumerate(pdf.pages, start=1):
+        new_pdf.pages.append(page)
+        if n % pages_per == 0:
+            output_filename = f"{str(entry_ids[entry_count]).zfill(6)}.pdf"
+            # save the PDF file
+            new_pdf.save(output_filename)
+            print(f"[+] File: {output_filename} saved.")
+            # go to the next file
+            entry_count += 1
+            new_pdf = Pdf.new()
+
+
+config = {
+    # "ambeer1.pdf": [35, 28, 17, 14, ],
+    "ambeer2.pdf": [39, 24, 8, 5, 11, ],
+    "dark.pdf": [51, 38, 54, 22, 30, 48, 16, 44, 31, ],
+    "euro1.pdf": [46, 37, 52, 18, 45, ],
+    "euro2.pdf": [47, 21, 53, 49, 6, 9, ],
+    "hoppy.pdf": [25, 26, 15, 40, ],
+    "uk.pdf": [20, 19, 23, 32, 10, 7, ]
+}
+for filename, entry_ids in config.items():
+    split_and_name(filename=filename, entry_ids=entry_ids)
